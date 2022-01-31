@@ -1,129 +1,158 @@
-// Etape 1 : Récupération de l'id du produit dans l'url 
-let url = `http://localhost:3000/api/products/`
-let newUrl = new URL(window.location.href);
-let getId = newUrl.searchParams.get("id");
+(function product() {
+    const newUrl = new URL(window.location.href);
+    const getId = newUrl.searchParams.get("id");
+    const products = fetch(`http://localhost:3000/api/products`)
 
-// Etape 2 : Récupérer le produit 
-function getProduct (){
-fetch(url + getId)
-.then((data) =>{
-    data.json()
-    .then((data) => {
 
-        let name = data.name;
-        let price = data.price;
-        let description = data.description;
-        let altTxt = data.altTxt;
-        let imageUrl = data.imageUrl;
-        let colors = data.colors;
-     
 
-        // création des balises img et de l'attribut "alt"
-        let image =  `<img src="${imageUrl}" alt="${altTxt}" id="imgKanap"/>`;
-        document.querySelector('.item__img').innerHTML = image;
- 
+    
+//affichage des données de l'API dans le DOM:
 
-        // Affichage du contenus
-        document.querySelector('#title').innerHTML = name;
-        document.querySelector('#price').innerHTML = price;
-        document.querySelector('#description').innerHTML = description;
 
-        // Affichage des couleurs
-        for(value in colors){
+products.then(async (response)=>{
+   
+       try {
+    
+           let productsData = await response.json()    
+           
+           for (let i = 0; i < productsData.length; i++) {
+               
+                let product = productsData[i];
+    
+                let productId = productsData[i]._id;
+                let productaltTxt = productsData[i].altTxt;       
+                let productName = productsData[i].name;
+                let productPrice = productsData[i].price;
+                let productImageUrl = productsData[i].imageUrl;
+                let productDescription = productsData[i].description;
+                
+    
+//Affichage des données dans le DOM
+                
+                if (productId === getId) {
+    
+                document.querySelector('.item__img').innerHTML = `<img src="${productImageUrl} " alt="${productaltTxt}">`;
+                document.querySelector("#title").innerText = productName;
+                document.querySelector("#description").innerText = productDescription;
+                document.querySelector("#price").innerText = productPrice;
+                
+//Récupération et affichage des couleurs         
+                
+                let productColors = productsData[i].colors;         
+    
+                for (let i= 0; i < productColors.length; i++){ 
+                   let colorsValue = productColors[i];
+    
+                    document.querySelector("#colors").innerHTML +=`
+                 <option value="${colorsValue}">${colorsValue}</option>`;
                   
-            document.querySelector('#colors').innerHTML += 
-            `<option value="${colors[value]}">${colors[value]}</option>`;
-
-        }
-    })
-})
-}
-
-getProduct();
-
-
-document.querySelector('#addToCart').addEventListener('click', (event) => {
-
-    // Stop la propagation 
-    event.preventDefault();
-  
-    // Récupération du produit.
-    const nameKanap = document.getElementById('title').innerText;
-    const quantity = document.getElementById('quantity').value;
-    const colors = document.getElementById('colors').value;
-
-    const price = document.getElementById('price').innerText;
-    const imageUrl = document.getElementById('imgKanap').src;
-    const description =  document.getElementById('description').innerHTML;
-
-
-    // Création d'un objet pour le localstorage
-    let products = {
-        getId,        
-        nameKanap,
-        quantity,
-        colors,
-        price,
-        imageUrl,
-        description
-    }   
-
-
-    // Récupération du localstorage
-    let produitLocalStorage = JSON.parse(localStorage.getItem('articles')) || []; 
-
-    // On déclare une variable dans le cas ou le produit est déjà présent dans le localstorage
-    let found = false;
-
-    // On boucle sur le localstorage pour modifier la quantité 
-    for(let product of produitLocalStorage){
-       
-        // On vérifie si l'id est la couleurs que l'on souhaite ajouté est déjà présent dans le localstorage.
-        if(getId === product.getId && colors === product.colors){         
-            product.quantity = parseInt(product.quantity) + parseInt(quantity);
-
-            // On modifie la valeur de la variable pour déclarer que le produit existe déjà dans le localstorage
-            found = true;
-
-            // On fait une pause
-            break;
-        } 
-
-    };
-
-    // !found = found = true
-    if(!found){
-        let product = {
-            getId,        
-            nameKanap,
-            quantity,
+                }
+                    
+                } 
+    
+           }
+    
+           const addToCart = document.querySelector("#addToCart")
+    
+           addToCart.addEventListener("click", (event) =>{
+            event.preventDefault();
+               
+            let image = document.querySelector(".item__img img").src;
+            let colors = document.querySelector("#colors").value;  
+            let name = document.querySelector("#title").innerText;
+            let desc = document.querySelector("#description").innerText;       
+            let price = document.querySelector("#price").innerText;
+            let quantity = document.querySelector("#quantity").value;
+    
+//création d'un objet "produit".....
+    
+           let product = {
+    
+            getId,
+            image,
+            name,
+            desc,
             colors,
             price,
-            imageUrl,
-            description                  
-        }  
-     
-    // Ajout du nouveau produit dans la variable
-    produitLocalStorage.push(product);
-    alert('Panier modifié')
-    }
-
-    // On pousse la nouvelle valeur dans le localstorage
-    localStorage.setItem('articles',JSON.stringify(produitLocalStorage));
+            quantity
     
+           }
+    
+           
+ //-----------------------------enregistrement du panier ---------------------------------------------------------------
+           function saveCard(card) {
+    
+            localStorage.setItem("article", JSON.stringify(card));
+            
+        }
+        
+//-----------------------------création du panier ---------------------------------------------------------------
+        function getCard() {
+        
+            let card = localStorage.getItem("article")
+        
+            if (card == null) {
+        
+                return [];
+                
+            } else {
+        
+                return JSON.parse(card);
+                
+            }
+          
+        }
+
+//-----------------------------Ajout d'un article au panier ---------------------------------------------------------------
+        
+        function addCard(product) {
+        
+            let card = getCard();
+            let foundProduct = card.find(p => p.id == product.id & p.colors == product.colors);
+            if (foundProduct != undefined) {
+    
+            let newQuantity = document.querySelector("#quantity").value;
+            
+            foundProduct.quantity = newQuantity;
+    
+            console.log('foundProduct:', foundProduct.quantity)   
+            
+    
+            alert("Les quantités de votre produit ont été modifiées");
+    
+            } else {
+             
+                card.push(product);
+                alert("votre produit a été ajouté"); 
+            }  
+            
+            saveCard(card);
+            
+        }
+            addCard(product)
+    
+    
+           })
+    
+       } catch (error) {
+           console.log("ça bug grave !!!" + error)
+       }
+    
+    }).catch(() => console.error("Pas de réponse" + erreur));
+    
+    
+    }
+    
+)()
 
 
-    // Quand j'ajoute un produit, vérifier si le localstorage est vide si oui le créer si non
-    // ajouter le produit dedans 
-
-    // Si le localstorage existe vérifier si le produit que tu souhaite ajouté n'est pas déjà présent dedans 
-
-})
 
 
 
-// Afficher les produit dans la home 
-// Afficher le produit dynamiquement ( 1 seul produit )
-// Regarder le localstorage (afin de créer un panier) : localStorage.setItem("name", "price","quantity");
-// Ajouter des produits dans le localstorage 
-// Afficher le panier du localstorage dans la page cart.html
+
+
+
+
+
+
+
