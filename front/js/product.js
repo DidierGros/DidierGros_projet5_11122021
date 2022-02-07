@@ -81,16 +81,14 @@ products.then(async (response)=>{
            
  //-----------------------------enregistrement du panier ---------------------------------------------------------------
            function saveCard(card) {
-    
-            localStorage.setItem("article", JSON.stringify(card));
+           localStorage.setItem("article", JSON.stringify(card));
             
         }
         
 //-----------------------------création du panier ---------------------------------------------------------------
         function getCard() {
         
-            let card = localStorage.getItem("article")
-        
+            let card = localStorage.getItem("article")        
             if (card == null) {
         
                 return [];
@@ -103,14 +101,16 @@ products.then(async (response)=>{
           
         }
 
-//-----------------------------Ajout d'un article au panier ---------------------------------------------------------------
+//-----------------------------Ajout d'un article au panier et Modification des quantité---------------------------------------------------------------
         
         function addCard(product) {
         
             let card = getCard();
             let foundProduct = card.find(p => p.id == product.id & p.colors == product.colors);
+
             if (foundProduct != undefined) {
     
+            //Modification des quantité
             let newQuantity = document.querySelector("#quantity").value;
             
             foundProduct.quantity = newQuantity;
@@ -120,8 +120,13 @@ products.then(async (response)=>{
     
             alert("Les quantités de votre produit ont été modifiées");
     
+            } else if (quantity == 0 || colors == ""){                
+                
+                alert("Votre produit est mal renseigné : veuillez indiquer un choix de couleur et une quantité")
+
             } else {
-             
+
+                //Ajout du produit au panier             
                 card.push(product);
                 alert("votre produit a été ajouté"); 
             }  
