@@ -56,7 +56,6 @@ function cardDisplay(){
 
 // supprimer un produit------------------------------------------------//
 
-
 function removeFromCard(){
 
   let deleteItem = document.querySelectorAll(".deleteItem");
@@ -90,7 +89,6 @@ function removeFromCard(){
  };
 
 // Changement des quantités du panier---------------//
-
   
 function changeQuantity(){
 
@@ -124,7 +122,6 @@ itemQuantity.forEach(change => {
 })
 };
 
-
 //--------------Calcul du prix total du panier-------------------//
 
 function cardTotalPrice() {
@@ -139,7 +136,6 @@ function cardTotalPrice() {
 cardTotalPrice();
 
 //-----------------Calcul du nombre total d'articles----------------------//
-
 
 function totalQuantity (){
 
@@ -194,8 +190,7 @@ cardDisplay();
 
     }
   });
-  
-  
+    
   let lastName = document.querySelector("#lastName");
 
   lastName.setAttribute("placeholder","Indiquer votre nom sans aucun chiffre SVP !!!");

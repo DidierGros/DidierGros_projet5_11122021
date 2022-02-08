@@ -77,14 +77,13 @@ products.then(async (response)=>{
             quantity
     
            }
-    
-           
+        
  //-----------------------------enregistrement du panier ---------------------------------------------------------------
            function saveCard(card) {
            localStorage.setItem("article", JSON.stringify(card));
             
         }
-        
+       
 //-----------------------------création du panier ---------------------------------------------------------------
         function getCard() {
         
@@ -144,7 +143,6 @@ products.then(async (response)=>{
        }
     
     }).catch(() => console.error("Pas de réponse" + erreur));
-    
     
     }
     

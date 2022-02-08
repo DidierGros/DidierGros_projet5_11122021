@@ -4,7 +4,6 @@
 const products = fetch("http://localhost:3000/api/products");
 
 products.then(async (response)=>{
-
         
 try {
 
