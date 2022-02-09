@@ -1,13 +1,12 @@
 (function product() {
+
+// récupération des données de l'API et ID de la page
+
     const newUrl = new URL(window.location.href);
     const getId = newUrl.searchParams.get("id");
     const products = fetch(`http://localhost:3000/api/products`)
-
-
-
-    
-//affichage des données de l'API dans le DOM:
-
+      
+//affichage des données de l'API dans le DOM
 
 products.then(async (response)=>{
    
@@ -27,7 +26,7 @@ products.then(async (response)=>{
                 let productDescription = productsData[i].description;
                 
     
-//Affichage des données dans le DOM
+//Affichage des données dans le DOM en fonction de " ID "
                 
                 if (productId === getId) {
     
@@ -47,10 +46,8 @@ products.then(async (response)=>{
                  <option value="${colorsValue}">${colorsValue}</option>`;
                   
                 }
-                    
-                } 
-    
-           }
+            } 
+        }
     
            const addToCart = document.querySelector("#addToCart")
     
@@ -60,8 +57,7 @@ products.then(async (response)=>{
             let image = document.querySelector(".item__img img").src;
             let colors = document.querySelector("#colors").value;  
             let name = document.querySelector("#title").innerText;
-            let desc = document.querySelector("#description").innerText;       
-            let price = document.querySelector("#price").innerText;
+            let desc = document.querySelector("#description").innerText;    
             let quantity = document.querySelector("#quantity").value;
     
 //création d'un objet "produit".....
@@ -72,20 +68,20 @@ products.then(async (response)=>{
             image,
             name,
             desc,
-            colors,
-            price,
+            colors,            
             quantity
     
            }
-        
  //-----------------------------enregistrement du panier ---------------------------------------------------------------
-           function saveCard(card) {
+           
+    function saveCard(card) {
            localStorage.setItem("article", JSON.stringify(card));
             
         }
-       
+        
 //-----------------------------création du panier ---------------------------------------------------------------
-        function getCard() {
+    
+    function getCard() {
         
             let card = localStorage.getItem("article")        
             if (card == null) {
@@ -94,30 +90,25 @@ products.then(async (response)=>{
                 
             } else {
         
-                return JSON.parse(card);
-                
+                return JSON.parse(card);                
             }
-          
         }
 
 //-----------------------------Ajout d'un article au panier et Modification des quantité---------------------------------------------------------------
         
-        function addCard(product) {
+    function addCard(product) {
         
             let card = getCard();
             let foundProduct = card.find(p => p.id == product.id & p.colors == product.colors);
 
             if (foundProduct != undefined) {
     
-            //Modification des quantité
+    //-------Modification des quantité
             let newQuantity = document.querySelector("#quantity").value;
             
-            foundProduct.quantity = newQuantity;
-    
-            console.log('foundProduct:', foundProduct.quantity)   
+            foundProduct.quantity = newQuantity;    
             
-    
-            alert("Les quantités de votre produit ont été modifiées");
+                alert("Les quantités de votre produit ont été modifiées");
     
             } else if (quantity == 0 || colors == ""){                
                 
@@ -125,17 +116,14 @@ products.then(async (response)=>{
 
             } else {
 
-                //Ajout du produit au panier             
+    //-------Ajout du produit au panier
+
                 card.push(product);
                 alert("votre produit a été ajouté"); 
             }  
-            
-            saveCard(card);
-            
+                saveCard(card);
         }
-            addCard(product)
-    
-    
+                addCard(product)
            })
     
        } catch (error) {
@@ -143,19 +131,7 @@ products.then(async (response)=>{
        }
     
     }).catch(() => console.error("Pas de réponse" + erreur));
-    
-    }
-    
-)()
-
-
-
-
-
-
-
-
-
-
+            
+})()
 
 

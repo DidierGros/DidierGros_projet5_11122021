@@ -7,7 +7,8 @@ products.then(async (response)=>{
         
 try {
 
-    // récupération des données et affichage dans le DOM
+//----------- récupération des données et affichage dans le DOM
+
     const productsData = await response.json()
 
     for (let i = 0; i < productsData.length; i++) {
@@ -18,7 +19,7 @@ try {
         let productImageUrl = productsData[i].imageUrl;
         let productDescription = productsData[i].description;
 
-        // Affichage dans le DOM
+//------------ Affichage dans la page
 
         let productDom = document.querySelector("#items").innerHTML +=`
         <a href="./product.html?id=${productId}">
